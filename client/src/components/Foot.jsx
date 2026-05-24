@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaDiscord, FaLinkedin, FaGithub, FaYoutube } from 'react-icons/fa';
+import { FaDiscord, FaLinkedin, FaGithub, FaYoutube, FaArrowUp } from 'react-icons/fa';
 
 const Foot = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Functional addition: Toggle scroll-to-top button visibility
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <footer className="site-footer lesson" role="contentinfo" aria-label="Site footer">
+    <footer className="site-footer" role="contentinfo" aria-label="Site footer">
       <div className="footer-top">
+        {/* Brand Section */}
         <div className="footer-brand">
-          <p className="footer-brand-title">CodeVibe</p>
+          <h2 className="footer-brand-title">CodeVibe</h2>
           <p className="footer-brand-copy">
             Open-source learning for HTML, CSS, JavaScript, backend skills, and real-world practice.
           </p>
         </div>
 
-        <div className="footer-links">
+        {/* Links Section - Wrapped in a semantic <nav> */}
+        <nav className="footer-links" aria-label="Footer Navigation">
           <h3>Quick Links</h3>
           <Link to="/privacy-policy" className="footer-link">
             Privacy Policy
@@ -29,8 +54,9 @@ const Foot = () => {
           >
             Contributor Guidelines
           </a>
-        </div>
+        </nav>
 
+        {/* Social Section */}
         <div className="footer-social">
           <h3>Community</h3>
           <div className="social-grid">
@@ -72,16 +98,28 @@ const Foot = () => {
 
       <div className="footer-divider" aria-hidden="true" />
 
+      {/* Bottom Section */}
       <div className="footer-bottom">
         <p className="footer-copy">
-          © 2026 CodeVibe. Built with community, creativity, and accessible learning.
+          © {new Date().getFullYear()} CodeVibe. Built with community, creativity, and accessible learning.
         </p>
         <p className="footer-note">
           Want to contribute? Open an issue or follow the contributor guidelines above.
         </p>
       </div>
-    </footer>
-  )
-}
 
-export default Foot
+      {/* Scroll to Top Button */}
+      {isVisible && (
+        <button 
+          className="scroll-to-top" 
+          onClick={scrollToTop} 
+          aria-label="Scroll back to top"
+        >
+          <FaArrowUp aria-hidden="true" />
+        </button>
+      )}
+    </footer>
+  );
+};
+
+export default Foot;
